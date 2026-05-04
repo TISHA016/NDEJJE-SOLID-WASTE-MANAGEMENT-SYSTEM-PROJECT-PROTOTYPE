@@ -1,0 +1,115 @@
+﻿using Ndejje_Waste_Management_System;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System
+{
+    public class SubmitReportPage : Panel
+    {
+        private TextBox txtName, txtWeight, txtDesc;
+        private ComboBox cboZone, cboType;
+
+        public SubmitReportPage()
+        {
+            this.Dock = DockStyle.Fill;
+            this.BackColor = Color.FromArgb(244, 244, 242); // Light Gray Background
+
+            // ── Header ──────────────────────────────────────────────────
+            Label lblTitle = new Label
+            {
+                Text = "Submit Waste Report",
+                Font = new Font("Segoe UI", 16f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(27, 58, 107),
+                Bounds = new Rectangle(30, 20, 400, 40)
+            };
+
+            // ── Form Card (White Box) ──────────────────────────────────
+            Panel card = new Panel
+            {
+                BackColor = Color.White,
+                Bounds = new Rectangle(30, 70, 500, 450),
+                BorderStyle = BorderStyle.None
+            };
+
+            // Input Fields
+            AddLabel(card, "Full Name / Household ID:", 20);
+            txtName = AddTextBox(card, 45);
+
+            AddLabel(card, "Select Zone:", 90);
+            cboZone = new ComboBox { Bounds = new Rectangle(20, 115, 440, 30), DropDownStyle = ComboBoxStyle.DropDownList };
+            cboZone.Items.AddRange(new string[] { "Ndejje Zone A", "Ndejje Zone B", "Ndejje Hill", "Trading Centre" });
+            card.Controls.Add(cboZone);
+
+            AddLabel(card, "Waste Category:", 160);
+            cboType = new ComboBox { Bounds = new Rectangle(20, 185, 440, 30), DropDownStyle = ComboBoxStyle.DropDownList };
+            cboType.Items.AddRange(new string[] { "Organic (Food)", "Plastic", "Metallic", "Medical/Hazardous" });
+            card.Controls.Add(cboType);
+
+            AddLabel(card, "Est. Weight (kg):", 230);
+            txtWeight = AddTextBox(card, 255);
+
+            AddLabel(card, "Additional Description:", 300);
+            txtDesc = new TextBox { Bounds = new Rectangle(20, 325, 440, 60), Multiline = true };
+            card.Controls.Add(txtDesc);
+
+            // Submit Button
+            Button btnSubmit = new Button
+            {
+                Text = "SUBMIT REPORT",
+                BackColor = Color.FromArgb(15, 107, 116), // Teal
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+                FlatStyle = FlatStyle.Flat,
+                Bounds = new Rectangle(20, 400, 440, 40)
+            };
+            btnSubmit.FlatAppearance.BorderSize = 0;
+            btnSubmit.Click += OnSubmitClick;
+
+            card.Controls.Add(btnSubmit);
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(card);
+        }
+
+        private void OnSubmitClick(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validation
+                if (string.IsNullOrWhiteSpace(txtName.Text) || cboZone.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Please fill in all required fields.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Save to In-Memory DataStore
+                DataStore.Reports.Add(new WasteReport
+                {
+                    ReporterName = txtName.Text,
+                    Zone = cboZone.Text,
+                    WasteType = cboType.Text,
+                    EstimatedWeight = double.Parse(txtWeight.Text),
+                    Description = txtDesc.Text,
+                    ReportedAt = DateTime.Now
+                });
+
+                MessageBox.Show("Report submitted successfully! The collection team has been notified.", "Success");
+                ClearForm();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please enter a valid number for Weight.", "Format Error");
+            }
+        }
+
+        private void ClearForm()
+        {
+            txtName.Clear(); txtWeight.Clear(); txtDesc.Clear();
+            cboZone.SelectedIndex = -1; cboType.SelectedIndex = -1;
+        }
+
+        // Helpers to keep code clean
+        private void AddLabel(Panel p, string text, int y) => p.Controls.Add(new Label { Text = text, Bounds = new Rectangle(20, y, 300, 20), Font = new Font("Segoe UI", 9f, FontStyle.Bold) });
+        private TextBox AddTextBox(Panel p, int y) { var t = new TextBox { Bounds = new Rectangle(20, y, 440, 30) }; p.Controls.Add(t); return t; }
+    }
+}

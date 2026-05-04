@@ -1,0 +1,44 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Ndejje_Waste_Management_System.Data_Model
+{
+    public class Resident
+    {
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Zone { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; } = "Resident";
+        // Language preference selected at registration. Default to English.
+        public string Language { get; set; } = "English";
+    }
+
+    public class CollectionSchedule
+    {
+        public string Zone { get; set; }
+        public string Date { get; set; }
+        public string CollectorName { get; set; }
+    }
+
+    public class CollectionRecord
+    {
+        public string ResidentName { get; set; }
+        public string CollectorName { get; set; }
+        public string Date { get; set; }
+        public string Zone { get; set; }
+    }
+
+    // Simple sign-in record for residents
+    public class SignInRecord
+    {
+        public string ResidentName { get; set; }
+        public string Zone { get; set; }
+        public string DateTime { get; set; }
+    }
+}
+

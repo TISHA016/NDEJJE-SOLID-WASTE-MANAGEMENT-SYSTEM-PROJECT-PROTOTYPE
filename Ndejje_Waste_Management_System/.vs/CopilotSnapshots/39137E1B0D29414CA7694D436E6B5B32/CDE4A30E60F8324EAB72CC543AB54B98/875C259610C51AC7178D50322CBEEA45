@@ -1,0 +1,94 @@
+﻿using Ndejje_Waste_Management_System.Data_Model;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System
+{
+    public partial class Form1 : Form
+    {
+        // Simple in-memory storage
+        List<Resident> residents = new List<Resident>();
+        List<CollectionSchedule> schedules = new List<CollectionSchedule>();
+
+        public Form1()
+        {
+            InitializeComponent();
+            PopulateZones();
+            SetupSampleData();
+        }
+
+        private void PopulateZones()
+        {
+            var zones = new string[] { "Zone A", "Zone B", "Zone C", "Zone D" };
+
+            // Ensure combo boxes are available and populate them
+            cmbResZone.Items.Clear();
+            cmbResZone.Items.AddRange(zones);
+            if (cmbResZone.Items.Count > 0) cmbResZone.SelectedIndex = 0;
+
+            cmbSchedZone.Items.Clear();
+            cmbSchedZone.Items.AddRange(zones);
+            if (cmbSchedZone.Items.Count > 0) cmbSchedZone.SelectedIndex = 0;
+        }
+
+        private void SetupSampleData()
+        {
+            // Initial data for demonstration
+            residents.Add(new Resident { FullName = "John Doe", PhoneNumber = "0700111222", Zone = "Ndejje A" });
+            dgvResidents.DataSource = null;
+            dgvResidents.DataSource = residents;
+        }
+
+        // --- WORKFLOW 1: User Login & Roles ---
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            if (txtUsername.Text == "admin" && txtPassword.Text == "1234")
+            {
+                lblStatus.Text = "Role: Administrator (Full Access)";
+                // Navigate to the Dashboard tab after successful login
+                tabControl1.SelectedTab = tabDashboard;
+            }
+            else
+            {
+                MessageBox.Show("Invalid login credentials.");
+            }
+        }
+
+        // --- WORKFLOW 2: Register Resident ---
+        private void btnSaveResident_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtResName.Text)) return;
+
+            var newRes = new Resident
+            {
+                FullName = txtResName.Text,
+                PhoneNumber = txtResPhone.Text,
+                Zone = cmbResZone.Text
+            };
+
+            residents.Add(newRes);
+            dgvResidents.DataSource = null; // Refresh list
+            dgvResidents.DataSource = residents;
+
+            MessageBox.Show("Resident Registered Successfully!");
+        }
+
+        // --- WORKFLOW 3: Scheduling & Alerts ---
+        private void btnCreateSchedule_Click(object sender, EventArgs e)
+        {
+            var sched = new CollectionSchedule
+            {
+                Zone = cmbSchedZone.Text,
+                Date = dtpDate.Value.ToShortDateString(),
+                CollectorName = txtCollector.Text
+            };
+
+            schedules.Add(sched);
+
+            // ALERT: Simulate SMS Notification
+            string message = $"SMS ALERT: Collection scheduled for {sched.Zone} on {sched.Date}.";
+            MessageBox.Show(message, "SMS Dispatch System");
+        }
+    }
+}

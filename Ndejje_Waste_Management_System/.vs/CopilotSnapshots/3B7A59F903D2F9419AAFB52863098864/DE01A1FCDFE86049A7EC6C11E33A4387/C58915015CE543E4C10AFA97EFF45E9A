@@ -1,0 +1,183 @@
+﻿using Ndejje_Waste_Management_System.Data_Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System
+{
+    public partial class Form1 : Form
+    {
+        // --- DATA STORAGE (Stored in RAM while app is running) ---
+        List<Resident> residents = new List<Resident>();
+        List<CollectionSchedule> schedules = new List<CollectionSchedule>();
+        List<SignInRecord> signIns = new List<SignInRecord>();
+        Resident currentUser = null;
+
+        public Form1()
+        {
+            InitializeComponent();
+            Button btnLogin = new Button();
+            btnLogin.Text = "Login";
+            btnLogin.Width = 50;
+            btnLogin.Height = 40;
+            btnLogin.Top = 50;
+            btnLogin.Left = 50;
+            btnLogin.Click += BtnLogin_Click;
+            this.Controls.Add(btnLogin);
+
+            // Initialize control state after components are created
+            SetupInitialState();
+        }
+
+        private void BtnLogin_Click(object sender, EventArgs e)
+        {
+            Dashboard dash = new Dashboard();
+            dash.Show();
+            this.Hide();
+        }
+
+        private void SetupInitialState()
+        {
+            // Populate Zones
+            var zones = new string[] { "Zone A", "Zone B", "Zone C", "Zone D" };
+            cmbResZone.Items.AddRange(zones);
+            cmbSchedZone.Items.AddRange(zones);
+            if (cmbAdminZone != null) cmbAdminZone.Items.AddRange(zones);
+
+            // Populate Roles
+            if (cmbRole != null)
+            {
+                cmbRole.Items.AddRange(new string[] { "Resident", "Admin", "Collector", "Health Officer" });
+                cmbRole.SelectedIndex = 0;
+            }
+
+            // Start on Registration
+            tabControl1.SelectedTab = tabRegister;
+            lblStatus.Text = "Welcome! Please register to start.";
+
+            // Add a default admin for testing
+            residents.Add(new Resident { FullName = "admin", Password = "1234", Role = "Admin", Zone = "Zone A" });
+        }
+
+        // --- 1. REGISTRATION: GO DIRECT TO DASHBOARD ---
+        private void btnSaveResident_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtResName.Text) || string.IsNullOrWhiteSpace(txtAccountPassword.Text))
+            {
+                MessageBox.Show("Name and Password are required!");
+                return;
+            }
+
+            var newRes = new Resident
+            {
+                FullName = txtResName.Text.Trim(),
+                PhoneNumber = txtResPhone.Text.Trim(),
+                Zone = cmbResZone.Text,
+                Role = cmbRole.Text,
+                Password = txtAccountPassword.Text,
+                Language = cmbLanguage?.Text ?? "English"
+            };
+
+            residents.Add(newRes);
+            currentUser = newRes; // Log them in immediately
+
+            MessageBox.Show($"Account Created! Welcome, {currentUser.FullName}.");
+            ApplyAccessByRole();
+        }
+
+        // --- 2. LOGIN: MANUAL ENTRY ---
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            string userIn = txtLoginUsername.Text.Trim();
+            string passIn = txtLoginPassword.Text;
+
+            var foundUser = residents.FirstOrDefault(r =>
+                (r.FullName.Equals(userIn, StringComparison.OrdinalIgnoreCase) || r.PhoneNumber == userIn)
+                && r.Password == passIn);
+
+            if (foundUser != null)
+            {
+                currentUser = foundUser;
+                ApplyAccessByRole();
+            }
+            else
+            {
+                MessageBox.Show("Invalid credentials. Please check your username/password.");
+            }
+        }
+
+        // --- 3. REDIRECTION LOGIC ---
+        private void ApplyAccessByRole()
+        {
+            if (currentUser == null) return;
+
+            string role = currentUser.Role;
+            lblStatus.Text = $"Active User: {currentUser.FullName} | Role: {role}";
+
+            // Admin, Collector, and Health Officers see the main Dashboard
+            if (role == "Admin" || role == "Collector" || role == "Health Officer")
+            {
+                tabDashboard.Enabled = true;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabDashboard;
+                RefreshDashboard();
+            }
+            // Residents only see their specific Resident tab
+            else
+            {
+                tabDashboard.Enabled = false;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabResident;
+                ShowResidentView();
+            }
+        }
+
+        // --- 4. DATA DISPLAY LOGIC ---
+        private void RefreshDashboard()
+        {
+            lblTotalResidentsValue.Text = residents.Count.ToString();
+            lblTotalCollectorsValue.Text = residents.Count(r => r.Role == "Collector").ToString();
+
+            dgvResidents.DataSource = null;
+            dgvResidents.DataSource = residents.ToList();
+
+            dgvSignIns.DataSource = null;
+            dgvSignIns.DataSource = signIns.ToList();
+        }
+
+        private void ShowResidentView()
+        {
+            lblResWelcome.Text = $"Hello, {currentUser.FullName}";
+            var mySchedule = schedules.FirstOrDefault(s => s.Zone == currentUser.Zone);
+
+            lblResNextScheduleEnglish.Text = mySchedule != null
+                ? $"Next Collection: {mySchedule.Date}"
+                : "No schedule posted for your zone.";
+        }
+
+        // Resident Sign-In Button
+        private void btnSignIn_Click(object sender, EventArgs e)
+        {
+            if (currentUser == null) return;
+
+            signIns.Add(new SignInRecord
+            {
+                ResidentName = currentUser.FullName,
+                Zone = currentUser.Zone,
+                DateTime = DateTime.Now.ToString("g")
+            });
+
+            MessageBox.Show("Thank you for signing in!");
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            currentUser = null;
+            txtLoginUsername.Clear();
+            txtLoginPassword.Clear();
+            tabControl1.SelectedTab = tabRegister;
+            lblStatus.Text = "Logged out.";
+        }
+    }
+}

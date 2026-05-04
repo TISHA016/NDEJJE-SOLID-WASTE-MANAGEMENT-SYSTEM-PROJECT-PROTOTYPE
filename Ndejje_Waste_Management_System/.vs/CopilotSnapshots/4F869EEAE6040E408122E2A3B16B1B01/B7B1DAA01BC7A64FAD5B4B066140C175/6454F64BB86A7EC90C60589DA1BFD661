@@ -1,0 +1,214 @@
+﻿using Ndejje_Waste_Management_System.Data_Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System
+{
+    public partial class Form1 : Form
+    {
+        // --- DATA STORAGE ---
+        List<Resident> residents = new List<Resident>();
+        List<CollectionSchedule> schedules = new List<CollectionSchedule>();
+        List<CollectionRecord> collectionRecords = new List<CollectionRecord>();
+        Resident currentUser = null;
+
+        public Form1()
+        {
+            InitializeComponent();
+            PopulateZones();
+            SetupSampleData();
+
+            // INITIAL UI STATE: Force user to Register first
+            ConfigureNavigation("Initial");
+        }
+
+        private void PopulateZones()
+        {
+            var zones = new string[] { "Zone A", "Zone B", "Zone C", "Zone D" };
+            cmbResZone.Items.AddRange(zones);
+            cmbSchedZone.Items.AddRange(zones);
+
+            if (cmbRole != null)
+            {
+                cmbRole.Items.AddRange(new string[] { "Resident", "Admin", "Collector", "Health Officer" });
+                cmbRole.SelectedIndex = 0;
+            }
+
+            if (cmbLanguage != null)
+            {
+                cmbLanguage.Items.AddRange(new string[] { "English", "Luganda" });
+                cmbLanguage.SelectedIndex = 0;
+            }
+        }
+
+        private void SetupSampleData()
+        {
+            residents.Add(new Resident { FullName = "Admin", Role = "Admin", Password = "1234", Zone = "Zone A" });
+            schedules.Add(new CollectionSchedule { Zone = "Zone A", Date = DateTime.Now.AddDays(2).ToShortDateString(), CollectorName = "Samuel" });
+            RefreshDashboard();
+        }
+
+        // --- NAVIGATION CONTROL ---
+        private void ConfigureNavigation(string state)
+        {
+            switch (state)
+            {
+                case "Initial":
+                    tabControl1.SelectedTab = tabRegister; // Start here
+                    tabDashboard.Enabled = false;
+                    tabResident.Enabled = false;
+                    lblStatus.Text = "Please register to create an account.";
+                    break;
+                case "PostRegistration":
+                    tabControl1.SelectedTab = tabLogin;
+                    lblStatus.Text = "Registration successful. Please login.";
+                    break;
+                case "LoggedIn":
+                    // Access is handled in ApplyAccessForCurrentUser()
+                    break;
+            }
+        }
+
+        // --- WORKFLOW 1: REGISTRATION ---
+        private void btnSaveResident_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtResName.Text) || string.IsNullOrWhiteSpace(txtAccountPassword.Text))
+            {
+                MessageBox.Show("Please enter a name and password.");
+                return;
+            }
+
+            var newRes = new Resident
+            {
+                FullName = txtResName.Text,
+                PhoneNumber = txtResPhone.Text,
+                Zone = cmbResZone.Text,
+                Role = cmbRole?.Text ?? "Resident",
+                Password = txtAccountPassword.Text,
+                Language = cmbLanguage?.Text ?? "English"
+            };
+
+            residents.Add(newRes);
+            ConfigureNavigation("PostRegistration");
+        }
+
+        // --- WORKFLOW 2: LOGIN ---
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            var username = !string.IsNullOrWhiteSpace(txtLoginUsername.Text) ? txtLoginUsername.Text.Trim() : txtUsername.Text?.Trim();
+            var password = !string.IsNullOrEmpty(txtLoginPassword.Text) ? txtLoginPassword.Text : txtPassword.Text;
+
+            var user = residents.FirstOrDefault(r =>
+                (r.FullName.Equals(username, StringComparison.OrdinalIgnoreCase) ||
+                 r.PhoneNumber == username) && r.Password == password);
+
+            if (user != null)
+            {
+                currentUser = user;
+                ApplyAccessForCurrentUser();
+            }
+            else
+            {
+                MessageBox.Show("Invalid credentials.");
+            }
+        }
+
+        // --- WORKFLOW 3: ROLE-BASED DASHBOARD REDIRECTION ---
+        private void ApplyAccessForCurrentUser()
+        {
+            string role = currentUser.Role ?? "Resident";
+            lblStatus.Text = $"User: {currentUser.FullName} | Role: {role}";
+
+            // 1. Admin/Collector View
+            if (role == "Admin" || role == "Collector")
+            {
+                tabDashboard.Enabled = true;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabDashboard;
+                UpdateResidentGridVisibility(true);
+                RefreshDashboard();
+            }
+            // 2. Resident/Health Officer View
+            else
+            {
+                tabDashboard.Enabled = false;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabResident;
+                ShowResidentMessages(currentUser);
+                UpdateResidentGridVisibility(false);
+            }
+        }
+
+        private void UpdateResidentGridVisibility(bool visible)
+        {
+            dgvResidents.Visible = visible;
+            dgvResidents.DataSource = visible ? residents.ToList() : null;
+        }
+
+        // --- WORKFLOW 4: SCHEDULING & LOCALIZATION ---
+        private void btnCreateSchedule_Click(object sender, EventArgs e)
+        {
+            var sched = new CollectionSchedule
+            {
+                Zone = cmbSchedZone.Text,
+                Date = dtpDate.Value.ToShortDateString(),
+                CollectorName = txtCollector.Text
+            };
+            schedules.Add(sched);
+
+            // Notify relevant residents
+            var affected = residents.Where(r => r.Zone == sched.Zone);
+            foreach (var res in affected)
+            {
+                string msg = GetLocalizedText(res.Language, "NextSchedule", sched.Zone, sched.Date);
+                MessageBox.Show(msg, $"SMS to {res.FullName}");
+            }
+            RefreshDashboard();
+        }
+
+        private void ShowResidentMessages(Resident r)
+        {
+            lblResWelcome.Text = $"Welcome, {r.FullName}";
+            var next = schedules.FirstOrDefault(s => s.Zone == r.Zone);
+
+            lblResNextScheduleEnglish.Text = next != null
+                ? GetLocalizedText("English", "NextSchedule", next.Zone, next.Date)
+                : "No schedule found.";
+
+            lblResNextScheduleLuganda.Text = next != null
+                ? GetLocalizedText("Luganda", "NextSchedule", next.Zone, next.Date)
+                : "Tewali nteekateeka ya kazigizigi.";
+        }
+
+        private string GetLocalizedText(string lang, string key, params object[] args)
+        {
+            bool isLuganda = lang == "Luganda";
+            if (key == "NextSchedule")
+                return isLuganda
+                    ? string.Format("Okukunganya takasasi mu {0} kuliwo nga {1}.", args)
+                    : string.Format("Waste collection in {0} is scheduled for {1}.", args);
+
+            return "";
+        }
+
+        private void RefreshDashboard()
+        {
+            lblTotalResidentsValue.Text = residents.Count.ToString();
+            lblTotalCollectorsValue.Text = residents.Count(r => r.Role == "Collector").ToString();
+            lblUpcomingSchedulesValue.Text = schedules.Count.ToString();
+
+            if (dgvRecentCollections != null)
+                dgvRecentCollections.DataSource = collectionRecords.OrderByDescending(c => c.Date).Take(5).ToList();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            currentUser = null;
+            ConfigureNavigation("Initial");
+            txtLoginUsername.Clear();
+            txtLoginPassword.Clear();
+        }
+    }
+}

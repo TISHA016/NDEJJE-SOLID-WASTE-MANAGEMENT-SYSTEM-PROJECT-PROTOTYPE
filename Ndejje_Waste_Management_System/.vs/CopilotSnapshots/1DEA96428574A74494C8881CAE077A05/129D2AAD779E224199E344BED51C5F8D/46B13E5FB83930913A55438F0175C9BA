@@ -1,0 +1,39 @@
+﻿using Ndejje_Waste_Management_System.DataStore.cs;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System.Dashboard.cs
+{
+    public class DashboardPage : Panel
+    {
+        public DashboardPage()
+        {
+            this.Dock = DockStyle.Fill;
+
+            Label lblTitle = new Label { Text = "Waste Overview", Font = new Font("Arial", 18, FontStyle.Bold), Location = new Point(20, 20), AutoSize = true };
+
+            double total = 0;
+            foreach (var item in DataStore.History) total += item.Weight;
+
+            Label lblTotal = new Label { Text = $"Total Collected: {total} kg", Location = new Point(20, 70), AutoSize = true };
+
+            // ALERT LOGIC
+            Label lblAlert = new Label { Location = new Point(20, 110), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
+            if (total > 200)
+            {
+                lblAlert.Text = "⚠️ WARNING: System Capacity Exceeded!";
+                lblAlert.ForeColor = Color.Red;
+            }
+            else
+            {
+                lblAlert.Text = "✅ System Status: Healthy";
+                lblAlert.ForeColor = Color.Green;
+            }
+
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(lblTotal);
+            this.Controls.Add(lblAlert);
+        }
+    }
+}

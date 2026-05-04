@@ -1,0 +1,269 @@
+﻿using Ndejje_Waste_Management_System.Data_Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Ndejje_Waste_Management_System
+{
+    public partial class Form1 : Form
+    {
+        // --- DATA STORAGE (Stored in RAM while app is running) ---
+        List<Resident> residents = new List<Resident>();
+        List<CollectionSchedule> schedules = new List<CollectionSchedule>();
+        List<SignInRecord> signIns = new List<SignInRecord>();
+        Resident currentUser = null;
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Initialize control state after components are created
+            SetupInitialState();
+            // By default, only privileged roles (Admin/Collector/Health Officer) should see in-memory data
+            SetMemoryVisibility(false);
+        }
+
+        // Roles that may view in-memory data
+        private static readonly string[] PrivilegedRoles = new[] { "Admin", "Collector", "Health Officer" };
+
+        private static bool IsPrivilegedRole(string role)
+        {
+            if (string.IsNullOrWhiteSpace(role)) return false;
+            return PrivilegedRoles.Any(r => string.Equals(r, role, StringComparison.OrdinalIgnoreCase));
+        }
+        private void SetupInitialState()
+        {
+            // Populate Zones
+            var zones = new string[] { "Zone A", "Zone B", "Zone C", "Zone D" };
+            cmbResZone.Items.AddRange(zones);
+            cmbSchedZone.Items.AddRange(zones);
+            if (cmbAdminZone != null) cmbAdminZone.Items.AddRange(zones);
+
+            // Populate Roles
+            if (cmbRole != null)
+            {
+                cmbRole.Items.AddRange(new string[] { "Resident", "Admin", "Collector", "Health Officer" });
+                cmbRole.SelectedIndex = 0;
+            }
+
+            // Populate Languages
+            if (cmbLanguage != null)
+            {
+                cmbLanguage.Items.AddRange(new string[] { "English", "Luganda" });
+                cmbLanguage.SelectedIndex = 0;
+            }
+
+            // Start on Registration
+            tabControl1.SelectedTab = tabRegister;
+            lblStatus.Text = "Welcome! Please register to start.";
+
+            // Add a default admin for testing
+            residents.Add(new Resident { FullName = "admin", Password = "1234", Role = "Admin", Zone = "Zone A" });
+        }
+
+        // --- 1. REGISTRATION: GO DIRECT TO DASHBOARD ---
+        private void btnSaveResident_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtResName.Text) || string.IsNullOrWhiteSpace(txtAccountPassword.Text))
+            {
+                MessageBox.Show("Name and Password are required!");
+                return;
+            }
+
+            var newRes = new Resident
+            {
+                FullName = txtResName.Text.Trim(),
+                PhoneNumber = txtResPhone.Text.Trim(),
+                Zone = cmbResZone.Text,
+                Role = cmbRole.Text,
+                Password = txtAccountPassword.Text,
+                Language = cmbLanguage?.Text ?? "English"
+            };
+
+            residents.Add(newRes);
+            currentUser = newRes; // Log them in immediately
+
+            MessageBox.Show($"Account Created! Welcome, {currentUser.FullName}.");
+            ApplyAccessByRole();
+        }
+
+        // --- 2. LOGIN: MANUAL ENTRY ---
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            string userIn = txtLoginUsername.Text.Trim();
+            string passIn = txtLoginPassword.Text;
+
+            var foundUser = residents.FirstOrDefault(r =>
+                (r.FullName.Equals(userIn, StringComparison.OrdinalIgnoreCase) || r.PhoneNumber == userIn)
+                && r.Password == passIn);
+
+            if (foundUser != null)
+            {
+                currentUser = foundUser;
+                ApplyAccessByRole();
+            }
+            else
+            {
+                MessageBox.Show("Invalid credentials. Please check your username/password.");
+            }
+        }
+
+        // --- 3. REDIRECTION LOGIC ---
+        private void ApplyAccessByRole()
+        {
+            if (currentUser == null) return;
+
+            string role = currentUser.Role;
+            lblStatus.Text = $"Active User: {currentUser.FullName} | Role: {role}";
+
+            // Admin, Collector, and Health Officers see the main Dashboard
+            if (IsPrivilegedRole(role))
+            {
+                tabDashboard.Enabled = true;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabDashboard;
+                // Allow privileged roles to view in-memory data
+                SetMemoryVisibility(true);
+                RefreshDashboard();
+            }
+            // Residents only see their specific Resident tab
+            else
+            {
+                tabDashboard.Enabled = false;
+                tabResident.Enabled = true;
+                tabControl1.SelectedTab = tabResident;
+                // Hide in-memory data for non-privileged users
+                SetMemoryVisibility(false);
+                ShowResidentView();
+            }
+        }
+
+        // Controls that expose in-memory data should only be visible to privileged roles
+        private void SetMemoryVisibility(bool visible)
+        {
+            try
+            {
+                if (dgvResidents != null) dgvResidents.Visible = visible;
+                if (dgvSignIns != null) dgvSignIns.Visible = visible;
+                if (dgvRecentCollections != null) dgvRecentCollections.Visible = visible;
+                if (cmbAdminZone != null) cmbAdminZone.Visible = visible;
+                if (btnViewAssigned != null) btnViewAssigned.Visible = visible;
+                if (lblSystemInfo != null) lblSystemInfo.Visible = visible;
+                // Summary labels
+                if (lblTotalResidentsTitle != null) lblTotalResidentsTitle.Visible = visible;
+                if (lblTotalResidentsValue != null) lblTotalResidentsValue.Visible = visible;
+                if (lblTotalCollectorsTitle != null) lblTotalCollectorsTitle.Visible = visible;
+                if (lblTotalCollectorsValue != null) lblTotalCollectorsValue.Visible = visible;
+                if (lblUpcomingSchedulesTitle != null) lblUpcomingSchedulesTitle.Visible = visible;
+                if (lblUpcomingSchedulesValue != null) lblUpcomingSchedulesValue.Visible = visible;
+                if (lblTotalCollectionsTitle != null) lblTotalCollectionsTitle.Visible = visible;
+                if (lblTotalCollectionsValue != null) lblTotalCollectionsValue.Visible = visible;
+            }
+            catch
+            {
+                // swallow — visibility is best-effort (designer may not have created all controls yet)
+            }
+        }
+
+        // --- 4. DATA DISPLAY LOGIC ---
+        private void RefreshDashboard()
+        {
+            lblTotalResidentsValue.Text = residents.Count.ToString();
+            lblTotalCollectorsValue.Text = residents.Count(r => r.Role == "Collector").ToString();
+
+            dgvResidents.DataSource = null;
+            dgvResidents.DataSource = residents.ToList();
+
+            dgvSignIns.DataSource = null;
+            dgvSignIns.DataSource = signIns.ToList();
+        }
+
+        private void ShowResidentView()
+        {
+            lblResWelcome.Text = $"Hello, {currentUser.FullName}";
+            var mySchedule = schedules.FirstOrDefault(s => s.Zone == currentUser.Zone);
+
+            lblResNextScheduleEnglish.Text = mySchedule != null
+                ? $"Next Collection: {mySchedule.Date}"
+                : "No schedule posted for your zone.";
+        }
+
+        // Resident Sign-In Button
+        private void btnSignIn_Click(object sender, EventArgs e)
+        {
+            if (currentUser == null) return;
+
+            signIns.Add(new SignInRecord
+            {
+                ResidentName = currentUser.FullName,
+                Zone = currentUser.Zone,
+                DateTime = DateTime.Now.ToString("g")
+            });
+
+            MessageBox.Show("Thank you for signing in!");
+        }
+
+        // Designer event: switch to Login tab
+        private void btnLoginNow_Click(object sender, EventArgs e)
+        {
+            if (tabControl1 != null && tabLogin != null)
+                tabControl1.SelectedTab = tabLogin;
+        }
+
+        // Designer event: take user to login tab
+        private void btnTabLogin_Click(object sender, EventArgs e)
+        {
+            if (tabControl1 != null && tabLogin != null)
+                tabControl1.SelectedTab = tabLogin;
+        }
+
+        // Designer event: create a collection schedule
+        private void btnCreateSchedule_Click(object sender, EventArgs e)
+        {
+            var zone = cmbSchedZone?.Text;
+            var date = dtpDate?.Value.ToShortDateString();
+            var collector = txtCollector?.Text;
+
+            if (string.IsNullOrWhiteSpace(zone) || string.IsNullOrWhiteSpace(collector))
+            {
+                MessageBox.Show("Please select a zone and enter a collector name.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            schedules.Add(new CollectionSchedule { Zone = zone, Date = date, CollectorName = collector });
+            MessageBox.Show("Schedule created.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            RefreshDashboard();
+        }
+
+        // Designer event: view assigned schedules for selected admin zone
+        private void btnViewAssigned_Click(object sender, EventArgs e)
+        {
+            var zone = cmbAdminZone?.Text;
+            if (string.IsNullOrWhiteSpace(zone))
+            {
+                MessageBox.Show("Please select a zone to view assignments.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var assigned = schedules.Where(s => s.Zone == zone).ToList();
+            if (!assigned.Any())
+            {
+                MessageBox.Show("No assignments for this zone.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var msg = string.Join("\n", assigned.Select(a => $"{a.Date} - {a.CollectorName}"));
+            MessageBox.Show(msg, $"Assignments for {zone}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            currentUser = null;
+            txtLoginUsername.Clear();
+            txtLoginPassword.Clear();
+            tabControl1.SelectedTab = tabRegister;
+            lblStatus.Text = "Logged out.";
+        }
+    }
+}

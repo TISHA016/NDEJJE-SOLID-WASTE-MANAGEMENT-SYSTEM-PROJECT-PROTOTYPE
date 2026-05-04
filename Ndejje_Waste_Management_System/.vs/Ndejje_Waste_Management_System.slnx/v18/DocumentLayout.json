@@ -1,0 +1,69 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|c:\\users\\arinda\u0027s macbook pro\\desktop\\ndejje_waste_management_system\\ndejje_waste_management_system\\data model\\resident.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|solutionrelative:data model\\resident.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|solutionrelative:Form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0ABC4A3-7E4B-42F4-A5E6-BD869ED7F7BB}|Ndejje_Waste_Management_System.csproj|solutionrelative:Form1.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.cs",
+              "RelativeToolTip": "Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T15:28:48.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Resident.cs",
+              "DocumentMoniker": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Data Model\\Resident.cs",
+              "RelativeDocumentMoniker": "Data Model\\Resident.cs",
+              "ToolTip": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Data Model\\Resident.cs",
+              "RelativeToolTip": "Data Model\\Resident.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T17:08:07.781Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Form1.Designer.cs",
+              "ToolTip": "C:\\Users\\ARINDA\u0027S MACBOOK PRO\\Desktop\\Ndejje_Waste_Management_System\\Ndejje_Waste_Management_System\\Form1.Designer.cs",
+              "RelativeToolTip": "Form1.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:03:53.1Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

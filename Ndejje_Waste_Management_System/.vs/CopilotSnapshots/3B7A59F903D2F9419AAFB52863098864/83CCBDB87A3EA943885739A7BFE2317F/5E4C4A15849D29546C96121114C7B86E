@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Ndejje_Waste_Management_System
+{
+    public class UserProfile
+    {
+        public string UserID { get; set; }
+        public string FullName { get; set; }
+        public string Role { get; set; } // e.g., "Administrator", "Collection Staff"
+        public string Phone { get; set; }
+        public string AssignedZone { get; set; }
+    }
+
+    public class WasteEntry
+    {
+        public string Area { get; set; }
+        public double Weight { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    public static class DataStore
+    {
+        // Mocking the currently logged-in user
+        public static UserProfile CurrentUser = new UserProfile
+        {
+            UserID = "USR-004",
+            FullName = "Sempijja Ivan",
+            Role = "Collection Staff",
+            Phone = "+256 700 000 000",
+            AssignedZone = "Ndejje Hill"
+        };
+
+        // In-memory history of waste collection entries
+        public static List<WasteEntry> History { get; } = new List<WasteEntry>();
+    }
+}

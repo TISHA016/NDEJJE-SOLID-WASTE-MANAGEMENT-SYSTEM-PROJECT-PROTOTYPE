@@ -1,0 +1,246 @@
+﻿namespace Ndejje_Waste_Management_System
+{
+    partial class Form1
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        // Controls used in the form
+        private System.Windows.Forms.DataGridView dgvResidents;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabRegister;
+        private System.Windows.Forms.TabPage tabDashboard;
+        private System.Windows.Forms.Label lblResName;
+        private System.Windows.Forms.TextBox txtResName;
+        private System.Windows.Forms.TextBox txtResPhone;
+        private System.Windows.Forms.ComboBox cmbResZone;
+        private System.Windows.Forms.Button btnSaveResident;
+        private System.Windows.Forms.ComboBox cmbSchedZone;
+        private System.Windows.Forms.DateTimePicker dtpDate;
+        private System.Windows.Forms.TextBox txtCollector;
+        private System.Windows.Forms.Button btnCreateSchedule;
+        private System.Windows.Forms.Button btnLogin;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.dgvResidents = new System.Windows.Forms.DataGridView();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabRegister = new System.Windows.Forms.TabPage();
+            this.tabDashboard = new System.Windows.Forms.TabPage();
+            this.lblResName = new System.Windows.Forms.Label();
+            this.txtResName = new System.Windows.Forms.TextBox();
+            this.txtResPhone = new System.Windows.Forms.TextBox();
+            this.cmbResZone = new System.Windows.Forms.ComboBox();
+            this.btnSaveResident = new System.Windows.Forms.Button();
+            this.cmbSchedZone = new System.Windows.Forms.ComboBox();
+            this.dtpDate = new System.Windows.Forms.DateTimePicker();
+            this.txtCollector = new System.Windows.Forms.TextBox();
+            this.btnCreateSchedule = new System.Windows.Forms.Button();
+            this.btnLogin = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResidents)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabRegister.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // dgvResidents
+            // 
+            this.dgvResidents.Location = new System.Drawing.Point(12, 12);
+            this.dgvResidents.Name = "dgvResidents";
+            this.dgvResidents.Size = new System.Drawing.Size(450, 200);
+            this.dgvResidents.TabIndex = 0;
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Location = new System.Drawing.Point(480, 12);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(200, 20);
+            this.txtUsername.TabIndex = 1;
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(480, 38);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(200, 20);
+            this.txtPassword.TabIndex = 2;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Location = new System.Drawing.Point(480, 64);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(200, 23);
+            this.lblStatus.TabIndex = 3;
+            this.lblStatus.Text = "Status";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabRegister);
+            this.tabControl1.Controls.Add(this.tabDashboard);
+            this.tabControl1.Location = new System.Drawing.Point(12, 230);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(668, 200);
+            this.tabControl1.TabIndex = 4;
+            // 
+            // tabRegister
+            // 
+            this.tabRegister.Controls.Add(this.lblResName);
+            this.tabRegister.Controls.Add(this.txtResName);
+            this.tabRegister.Controls.Add(this.txtResPhone);
+            this.tabRegister.Controls.Add(this.cmbResZone);
+            this.tabRegister.Controls.Add(this.btnSaveResident);
+            this.tabRegister.Controls.Add(this.cmbSchedZone);
+            this.tabRegister.Controls.Add(this.dtpDate);
+            this.tabRegister.Controls.Add(this.txtCollector);
+            this.tabRegister.Controls.Add(this.btnCreateSchedule);
+            this.tabRegister.Location = new System.Drawing.Point(4, 22);
+            this.tabRegister.Name = "tabRegister";
+            this.tabRegister.Padding = new System.Windows.Forms.Padding(3);
+            this.tabRegister.Size = new System.Drawing.Size(660, 174);
+            this.tabRegister.TabIndex = 0;
+            this.tabRegister.Text = "Register";
+            this.tabRegister.UseVisualStyleBackColor = true;
+
+            // 
+            // tabDashboard
+            // 
+            this.tabDashboard.Location = new System.Drawing.Point(4, 22);
+            this.tabDashboard.Name = "tabDashboard";
+            this.tabDashboard.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDashboard.Size = new System.Drawing.Size(660, 174);
+            this.tabDashboard.TabIndex = 1;
+            this.tabDashboard.Text = "Dashboard";
+            this.tabDashboard.UseVisualStyleBackColor = true;
+            // 
+            // lblResName
+            // 
+            this.lblResName.AutoSize = true;
+            this.lblResName.Location = new System.Drawing.Point(6, 9);
+            this.lblResName.Name = "lblResName";
+            this.lblResName.Size = new System.Drawing.Size(38, 13);
+            this.lblResName.TabIndex = 8;
+            this.lblResName.Text = "Name:";
+            // 
+            // txtResName
+            // 
+            this.txtResName.Location = new System.Drawing.Point(62, 6);
+            this.txtResName.Name = "txtResName";
+            this.txtResName.Size = new System.Drawing.Size(200, 20);
+            this.txtResName.TabIndex = 0;
+            // 
+            // txtResPhone
+            // 
+            this.txtResPhone.Location = new System.Drawing.Point(6, 32);
+            this.txtResPhone.Name = "txtResPhone";
+            this.txtResPhone.Size = new System.Drawing.Size(200, 20);
+            this.txtResPhone.TabIndex = 1;
+            // 
+            // cmbResZone
+            // 
+            this.cmbResZone.Location = new System.Drawing.Point(6, 58);
+            this.cmbResZone.Name = "cmbResZone";
+            this.cmbResZone.Size = new System.Drawing.Size(200, 21);
+            this.cmbResZone.TabIndex = 2;
+            // 
+            // btnSaveResident
+            // 
+            this.btnSaveResident.Location = new System.Drawing.Point(6, 85);
+            this.btnSaveResident.Name = "btnSaveResident";
+            this.btnSaveResident.Size = new System.Drawing.Size(100, 23);
+            this.btnSaveResident.TabIndex = 3;
+            this.btnSaveResident.Text = "Save Resident";
+            this.btnSaveResident.UseVisualStyleBackColor = true;
+            this.btnSaveResident.Click += new System.EventHandler(this.btnSaveResident_Click);
+            // 
+            // cmbSchedZone
+            // 
+            this.cmbSchedZone.Location = new System.Drawing.Point(220, 6);
+            this.cmbSchedZone.Name = "cmbSchedZone";
+            this.cmbSchedZone.Size = new System.Drawing.Size(200, 21);
+            this.cmbSchedZone.TabIndex = 4;
+            // 
+            // dtpDate
+            // 
+            this.dtpDate.Location = new System.Drawing.Point(220, 33);
+            this.dtpDate.Name = "dtpDate";
+            this.dtpDate.Size = new System.Drawing.Size(200, 20);
+            this.dtpDate.TabIndex = 5;
+            // 
+            // txtCollector
+            // 
+            this.txtCollector.Location = new System.Drawing.Point(220, 59);
+            this.txtCollector.Name = "txtCollector";
+            this.txtCollector.Size = new System.Drawing.Size(200, 20);
+            this.txtCollector.TabIndex = 6;
+            // 
+            // btnCreateSchedule
+            // 
+            this.btnCreateSchedule.Location = new System.Drawing.Point(220, 85);
+            this.btnCreateSchedule.Name = "btnCreateSchedule";
+            this.btnCreateSchedule.Size = new System.Drawing.Size(120, 23);
+            this.btnCreateSchedule.TabIndex = 7;
+            this.btnCreateSchedule.Text = "Create Schedule";
+            this.btnCreateSchedule.UseVisualStyleBackColor = true;
+            this.btnCreateSchedule.Click += new System.EventHandler(this.btnCreateSchedule_Click);
+            // 
+            // btnLogin
+            // 
+            this.btnLogin.Location = new System.Drawing.Point(480, 90);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(100, 23);
+            this.btnLogin.TabIndex = 5;
+            this.btnLogin.Text = "Login";
+            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(700, 450);
+            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.dgvResidents);
+            this.Name = "Form1";
+            this.Text = "Ndejje Waste Management";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResidents)).EndInit();
+            this.tabRegister.ResumeLayout(false);
+            this.tabRegister.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        #endregion
+    }
+}
+

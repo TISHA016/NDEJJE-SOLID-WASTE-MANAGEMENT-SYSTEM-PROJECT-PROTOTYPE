@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+
+namespace Ndejje_Waste_Management_System.DataStore.cs
+{
+    public class WasteEntry
+    {
+        public string Area { get; set; }
+        public double Weight { get; set; }
+        public string Category { get; set; }
+        public DateTime Date { get; set; }
+    }
+    public static class DataStore
+    {
+        // This list stores data while the app is running
+        public static List<WasteEntry> History = new List<WasteEntry>();
+
+        // This simulates who is logged in
+        public static string CurrentRole = "Staff"; // Change to "Admin" to test roles  
+    }
+    internal class DataStore1
+    {
+    }
+}
